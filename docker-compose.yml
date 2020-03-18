@@ -1,0 +1,50 @@
+version: '3.1'
+
+services:
+  broker1:
+    image: weiqichx/kafka_2.11:2.3.1
+    restart: always
+    hostname: broker1
+    ## --links flag is a legacy feature of Docker. link ( "SERVICE:ALIAS" )
+    #links:
+    #  - "zoo1"
+    ## external_links ( CONTAINER:ALIAS ).
+    #external_links: 
+    ports:
+      - 9092:9092
+    networks:
+      - "default"
+    environment:
+      BROKER_ID: 0
+      ZOO_CONNECT: zoo1:2181,zoo2:2181,zoo3:2181
+
+  broker2:
+    image: weiqichx/kafka_2.11:2.3.1
+    restart: always
+    hostname: broker2
+    ports:
+      - 9093:9092
+      # bind container's 9092 port to host's 9093 port
+    networks:
+      - "default"
+    environment:
+      BROKER_ID: 1
+      ZOO_CONNECT: zoo1:2181,zoo2:2181,zoo3:2181
+
+  broker3:
+    image: weiqichx/kafka_2.11:2.3.1
+    restart: always
+    hostname: broker3
+    ports:
+      - 9094:9092
+      # bind container's 9092 port to host's 9094 port
+    networks:
+      - "default"
+    environment:
+      BROKER_ID: 2
+      ZOO_CONNECT: zoo1:2181,zoo2:2181,zoo3:2181
+
+networks:
+  default:
+    driver: bridge
+  
